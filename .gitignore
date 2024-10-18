@@ -1,0 +1,8 @@
+venv/
+lambda-layer/python/
+python/
+*.zip
+.DS_Store
+lambda_function/
+__pycache__/
+.env
