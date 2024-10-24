@@ -1,20 +1,20 @@
 # NLLB
 
-This is the repository for a NLLB prototype. The prototype allows to use different LLM models for text and file translation. The code is model-agnostic. You can plugin your own models as long as they support the main interface. We want to use open-source models ofcouse for our implementation. 
+This is the repository for a NLLB prototype. The prototype allows to use different LLM models for text and file translation. The code is model-agnostic. You can plugin your own models as long as they support the main interface. We want to use open-source models ofcouse for our implementation.
 
 ## Structure
-The prototype defines and API interface in the services/api.py file. These apis are used to translate text and files. Each api call requires user to provide model information so it is completely model-agnostic. 
+The prototype defines and API interface in the services/api.py file. These apis are used to translate text and files. Each api call requires user to provide model information so it is completely model-agnostic.
 
-Anyone can use this api for their usecases. Right now, we have implemented two ways of deploying either using a lambda or a fast api server but they can be extended to more. 
+Anyone can use this api for their usecases. Right now, we have implemented two ways of deploying either using a lambda or a fast api server but they can be extended to more.
 
 Right now the models we support for translation are:
 - Bedrock Models (using llama 3 and llama 3.1 but can be extended to more by simply providing model id)
 - Google translator (used for testing purposes mostly)
 - Custom models deployed on bedrock
 
-Note: For bedrock models, you need to request access to the models to use them. 
+Note: For bedrock models, you need to request access to the models to use them.
 
-For file translation, we support: 
+For file translation, we support:
 - PDF files
 - DOCX files
 - MD files
@@ -22,7 +22,7 @@ For file translation, we support:
 
 ## Deploy
 
-Populate the bucket name and region for S3 in .env file. 
+Populate the bucket name and region for S3 in .env file.
 
 ### Lambda
 
@@ -30,7 +30,7 @@ To deploy prototype on lambda, follow the below steps:
 
 #### Create Dependencies Layer
 
-- First create lambda layer for dependencies if does not already exist. 
+- First create lambda layer for dependencies if does not already exist.
 
 ```console
 cd lambda-layer
@@ -48,7 +48,7 @@ sh ./install.sh
 #### Uploading code to Lambda
 - Create a zip folder of root directory. You do not need to include the lambda-layer directory. Its fine either way.
 - Upload the zip on the lambda located.
-- Attach the lambda layer with the function if not done. The option is under Layers. You can see which version of layer is attached and edit to change if necessary. 
+- Attach the lambda layer with the function if not done. The option is under Layers. You can see which version of layer is attached and edit to change if necessary.
 - Run deploy and done!
 - Configure to use API Gateway with the lambda and use that to invoke the lambda.
 - Lambda was deployed with python-3.8 to work. Might work with later versions you can try it out.
@@ -61,9 +61,9 @@ python deploy/lambda/deploy-lambda-code.py
 To use the script, first create a .env follwing the .env.example file and then enter the lambda function name and region. You should have your AWS credentials set up for this and have permission to access the specified lambda function.
 
 #### Making changes
-- To make changes to lambda function simply make the change and follow above steps again. 
+- To make changes to lambda function simply make the change and follow above steps again.
 - You only need to redeploy and reattach the layer if any dependency was changed/added/removed.
-- You can update the code on the lambda directly but choose to do it this way so we can track changes and easily track back if needed. 
+- You can update the code on the lambda directly but choose to do it this way so we can track changes and easily track back if needed.
 
 ### Fast Server
 
@@ -85,10 +85,10 @@ python deploy/server/server.py
 
 You can use your own object store implementation by extending the object_store class in `services/object_store/ObjectStoreClient.py`. This implementation has been tested with MinIO and works without need for modication.
 
-Then just add the implementation to `utils/client.py` file in the `get_object_store_client` function. Now specify that type in api_client initialization for the mode of deployment (server, lambda) you want to use. 
+Then just add the implementation to `utils/client.py` file in the `get_object_store_client` function. Now specify that type in api_client initialization for the mode of deployment (server, lambda) you want to use.
 
-Similary, you can modify the translation you want to use by adding that in the translators package and following the api that `bedrock.py` follows. For example, we have a mock implementation in this project in `services/translators/mock.py`. 
-Then just add that implementation in `utils/client.py` in get_translation_client function. Like for object store, specify that type in api_client initialization for the mode of deployment (server, lambda) you want to use. 
+Similary, you can modify the translation you want to use by adding that in the translators package and following the api that `bedrock.py` follows. For example, we have a mock implementation in this project in `services/translators/mock.py`.
+Then just add that implementation in `utils/client.py` in get_translation_client function. Like for object store, specify that type in api_client initialization for the mode of deployment (server, lambda) you want to use.
 
 ### Sample Request
 
@@ -149,7 +149,7 @@ curl  -X POST \
 }'
 ```
 
-- You can then get the file using the Get url 
+- You can then get the file using the Get url
 - For Get action (to donwload file)
 
 ```console
@@ -168,3 +168,21 @@ curl  -X POST \
 ### Links for Learning
 - https://ai.meta.com/research/no-language-left-behind/
 - https://aws.amazon.com/bedrock/
+
+# Legal 🧑‍⚖️📜
+
+The prototype allows to use different LLM models for text and file translation.
+Copyright (C) 2024 UNICEF
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
